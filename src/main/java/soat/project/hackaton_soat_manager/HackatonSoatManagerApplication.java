@@ -9,6 +9,7 @@ public class HackatonSoatManagerApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(HackatonSoatManagerApplication.class, args);
 
+        System.out.println("hello");
 	}
 
 }
