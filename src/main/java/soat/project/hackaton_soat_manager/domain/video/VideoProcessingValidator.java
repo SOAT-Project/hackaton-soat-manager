@@ -71,16 +71,10 @@ public class VideoProcessingValidator extends Validator {
     private void checkPendingRules() {
         if (video.getStatus() == VideoStatus.PENDING) {
 
-            if (video.getFileBucket() != null) {
-                validationHandler().append(new DomainError("'fileBucket' must be null when PENDING"));
-            }
-
-            if (video.getFilePath() != null) {
-                validationHandler().append(new DomainError("'filePath' must be null when PENDING"));
-            }
-
             if (video.getErrorMessage() != null) {
-                validationHandler().append(new DomainError("'errorMessage' must be null when PENDING"));
+                validationHandler().append(
+                        new DomainError("'errorMessage' must be null when PENDING")
+                );
             }
         }
     }
