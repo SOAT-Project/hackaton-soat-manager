@@ -6,9 +6,6 @@ import java.util.Set;
 
 public class VideoName extends ValueObject {
 
-    private static final Set<String> ALLOWED_EXTENSIONS =
-            Set.of("mp4", "avi", "mov", "mkv");
-
     private final String value;
 
     private VideoName(String value) {
@@ -18,12 +15,6 @@ public class VideoName extends ValueObject {
     public static VideoName of(String value) {
         if (value == null || value.isBlank()) {
             throw new IllegalArgumentException("Video name cannot be null or blank");
-        }
-
-        String extension = extractExtension(value);
-
-        if (!ALLOWED_EXTENSIONS.contains(extension.toLowerCase())) {
-            throw new IllegalArgumentException("Invalid video extension: " + extension);
         }
 
         return new VideoName(value);

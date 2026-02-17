@@ -2,7 +2,8 @@ package soat.project.hackaton_soat_manager.infrastructure.video.model.request;
 
 
 public record UploadVideoRequest(
-        String originalFilename,
+        String userId,
+        String filename,
         String contentType,
-        long size
+        byte[] fileContent
 ) {}

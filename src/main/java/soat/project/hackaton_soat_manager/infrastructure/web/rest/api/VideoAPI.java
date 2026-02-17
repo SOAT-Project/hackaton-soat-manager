@@ -5,7 +5,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import soat.project.hackaton_soat_manager.infrastructure.video.model.response.DownloadVideoResponse;
 import soat.project.hackaton_soat_manager.infrastructure.video.model.response.UploadVideoResponse;
+
+import java.io.IOException;
 
 @Tag(name = "Videos")
 @RequestMapping("/videos")
@@ -17,6 +20,15 @@ public interface VideoAPI {
     )
     ResponseEntity<UploadVideoResponse> upload(
             @RequestPart("file") org.springframework.web.multipart.MultipartFile file,
-            @RequestParam("userId") String userId
+            @RequestParam("userId") String userId,
+            @RequestParam("videoName") String videoName
+    )throws IOException;
+
+    @GetMapping(
+            value = "/{processId}/download",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    ResponseEntity<DownloadVideoResponse> download(
+            @PathVariable("processId") String processId
     );
 }

@@ -5,11 +5,12 @@ import soat.project.hackaton_soat_manager.application.gateway.ProcessingQueueGat
 import soat.project.hackaton_soat_manager.application.gateway.StorageGateway;
 import soat.project.hackaton_soat_manager.application.gateway.VideoProcessingGateway;
 import soat.project.hackaton_soat_manager.application.output.video.upload.UploadVideoOutput;
+import soat.project.hackaton_soat_manager.domain.exception.DomainException;
 import soat.project.hackaton_soat_manager.domain.exception.NotificationException;
+import soat.project.hackaton_soat_manager.domain.validation.DomainError;
 import soat.project.hackaton_soat_manager.domain.validation.handler.Notification;
 import soat.project.hackaton_soat_manager.domain.video.ProcessId;
 import soat.project.hackaton_soat_manager.domain.video.UserId;
-import soat.project.hackaton_soat_manager.domain.video.VideoName;
 import soat.project.hackaton_soat_manager.domain.video.VideoProcessing;
 
 import java.time.Instant;
@@ -59,7 +60,7 @@ public class UploadVideoUseCaseImpl extends UploadVideoUseCase {
                 VideoProcessing.create(
                         userId,
                         processId,
-                        VideoName.of(command.fileName()),
+                        command.videoname(),
                         command.fileName(),
                         command.fileContent().length,
                         bucket,
@@ -104,7 +105,9 @@ public class UploadVideoUseCaseImpl extends UploadVideoUseCase {
                 && !fileName.endsWith(".avi")
                 && !fileName.endsWith(".mov")
                 && !fileName.endsWith(".mkv")) {
-            throw new IllegalArgumentException("Invalid video extension");
+            throw DomainException.with(
+                    new DomainError("Invalid video extension")
+            );
         }
     }
 }
