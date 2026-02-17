@@ -4,7 +4,9 @@ import soat.project.hackaton_soat_manager.application.command.video.update.Updat
 import soat.project.hackaton_soat_manager.application.gateway.NotificationQueueGateway;
 import soat.project.hackaton_soat_manager.application.gateway.VideoProcessingGateway;
 import soat.project.hackaton_soat_manager.application.output.video.update.UpdateVideoStatusOutput;
+import soat.project.hackaton_soat_manager.domain.exception.NotFoundException;
 import soat.project.hackaton_soat_manager.domain.video.ProcessId;
+import soat.project.hackaton_soat_manager.domain.video.VideoProcessing;
 
 public class UpdateVideoStatusUseCaseImpl extends UpdateVideoStatusUseCase {
 
@@ -27,7 +29,7 @@ public class UpdateVideoStatusUseCaseImpl extends UpdateVideoStatusUseCase {
         var video = videoProcessingGateway
                 .findByProcessId(processId)
                 .orElseThrow(() ->
-                        new IllegalStateException("Process not found: " + command.processId())
+                        NotFoundException.with(VideoProcessing.class, processId)
                 );
 
         if (video.isFinished()) {
