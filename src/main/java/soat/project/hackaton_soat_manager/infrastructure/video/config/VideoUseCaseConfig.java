@@ -7,6 +7,8 @@ import soat.project.hackaton_soat_manager.application.gateway.NotificationQueueG
 import soat.project.hackaton_soat_manager.application.gateway.ProcessingQueueGateway;
 import soat.project.hackaton_soat_manager.application.gateway.StorageGateway;
 import soat.project.hackaton_soat_manager.application.gateway.VideoProcessingGateway;
+import soat.project.hackaton_soat_manager.application.usecase.video.download.DownloadVideoUseCase;
+import soat.project.hackaton_soat_manager.application.usecase.video.download.DownloadVideoUseCaseImpl;
 import soat.project.hackaton_soat_manager.application.usecase.video.update.UpdateVideoStatusUseCase;
 import soat.project.hackaton_soat_manager.application.usecase.video.update.UpdateVideoStatusUseCaseImpl;
 import soat.project.hackaton_soat_manager.application.usecase.video.upload.UploadVideoUseCase;
@@ -31,6 +33,14 @@ public class VideoUseCaseConfig {
             NotificationQueueGateway notificationQueueGateway
     ){
         return new UpdateVideoStatusUseCaseImpl(videoProcessingGateway, notificationQueueGateway);
+    }
+
+    @Bean
+    public DownloadVideoUseCase downloadVideoUseCase(
+            VideoProcessingGateway videoProcessingGateway,
+            StorageGateway storageGateway
+    ){
+        return new DownloadVideoUseCaseImpl(videoProcessingGateway, storageGateway);
     }
 
 }
