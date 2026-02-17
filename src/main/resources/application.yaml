@@ -1,0 +1,76 @@
+server:
+  port: ${APPLICATION_PORT}
+  servlet:
+    context-path: /api
+    encoding:
+      force: true
+  compression:
+    enabled: true
+    mime-types: text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,application/json
+    min-response-size: 1024
+  undertow:
+    threads:
+      worker: 64
+      io: 4
+  shutdown: graceful
+
+spring:
+  main:
+    banner-mode: off
+  application:
+    name: hackaton-soat-manager
+
+  jackson:
+    serialization:
+      indent_output: true
+
+  cloud:
+    aws:
+      region:
+        static: ${AWS_REGION}
+      credentials:
+        access-key: ${AWS_ACCESS_KEY_ID}
+        secret-key: ${AWS_SECRET_ACCESS_KEY}
+      sqs:
+        enabled: true
+        listener:
+          queue-not-found-strategy: fail
+          auto-startup: true
+
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  health:
+    livenessState:
+      enabled: true
+    readinessState:
+      enabled: true
+
+aws:
+  s3:
+    bucket: ${AWS_BUCKET}
+
+  sqs:
+    process-queue:
+      queue-name: ${AWS_PROCESS_QUEUE}
+      queue-url: ${AWS_PROCESS_QUEUE_URL}
+    processed-queue:
+      queue-name: ${AWS_PROCESSED_QUEUE}
+      queue-url: ${AWS_PROCESSED_QUEUE_URL}
+    notify-queue:
+      queue-name: ${AWS_NOTIFY_QUEUE}
+      queue-url: ${AWS_NOTIFY_QUEUE_URL}
+
+  dynamodb:
+    table-name: ${AWS_DYNAMO_TABLE}
