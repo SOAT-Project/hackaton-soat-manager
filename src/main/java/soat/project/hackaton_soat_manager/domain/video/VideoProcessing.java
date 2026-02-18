@@ -189,4 +189,6 @@ public class VideoProcessing extends AggregateRoot<ProcessId> {
     public long getFileSize() {
         return fileSize;
     }
+
+
 }

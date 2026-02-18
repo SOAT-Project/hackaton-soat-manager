@@ -1,12 +1,15 @@
 package soat.project.hackaton_soat_manager.infrastructure.web.rest;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import soat.project.hackaton_soat_manager.infrastructure.video.controller.VideoController;
 import soat.project.hackaton_soat_manager.infrastructure.video.model.response.DownloadVideoResponse;
+import soat.project.hackaton_soat_manager.infrastructure.video.model.response.GetVideoByProcessIdResponse;
+import soat.project.hackaton_soat_manager.infrastructure.video.model.response.ListVideosByUserResponse;
 import soat.project.hackaton_soat_manager.infrastructure.video.model.response.UploadVideoResponse;
 import soat.project.hackaton_soat_manager.infrastructure.web.rest.api.VideoAPI;
 
@@ -42,5 +45,18 @@ public class RestVideoController implements VideoAPI {
     public ResponseEntity<DownloadVideoResponse> download(String processId) {
         return ResponseEntity.ok(videoController.download(processId));
     }
+
+    @Override
+    public ResponseEntity<ListVideosByUserResponse> list(
+            @RequestParam("userId") String userId) {
+        return ResponseEntity.ok(videoController.listByUser(userId));
+    }
+
+    @Override
+    public ResponseEntity<GetVideoByProcessIdResponse> getByProcessId(
+            @PathVariable String processId) {
+        return ResponseEntity.ok(videoController.getByProcessId(processId));
+    }
+
 
 }

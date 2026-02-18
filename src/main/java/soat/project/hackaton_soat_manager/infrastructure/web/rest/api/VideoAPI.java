@@ -6,6 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import soat.project.hackaton_soat_manager.infrastructure.video.model.response.DownloadVideoResponse;
+import soat.project.hackaton_soat_manager.infrastructure.video.model.response.GetVideoByProcessIdResponse;
+import soat.project.hackaton_soat_manager.infrastructure.video.model.response.ListVideosByUserResponse;
 import soat.project.hackaton_soat_manager.infrastructure.video.model.response.UploadVideoResponse;
 
 import java.io.IOException;
@@ -28,7 +30,14 @@ public interface VideoAPI {
             value = "/{processId}/download",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    ResponseEntity<DownloadVideoResponse> download(
-            @PathVariable("processId") String processId
-    );
+    ResponseEntity<DownloadVideoResponse> download(@PathVariable("processId") String processId);
+
+    @GetMapping
+    ResponseEntity<ListVideosByUserResponse> list(@RequestParam("userId") String userId);
+
+    @GetMapping("/{processId}")
+    public ResponseEntity<GetVideoByProcessIdResponse> getByProcessId(@PathVariable String processId);
+
+
+
 }

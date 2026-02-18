@@ -17,6 +17,8 @@ import java.util.Optional;
 public class DynamoVideoProcessingRepository implements VideoProcessingGateway {
 
     private final DynamoDbClient dynamoDbClient;
+    @Value("${aws.dynamodb.table-name}")
+    private String tableName;
 
     public DynamoVideoProcessingRepository(
             final DynamoDbClient dynamoDbClient
@@ -24,24 +26,21 @@ public class DynamoVideoProcessingRepository implements VideoProcessingGateway {
         this.dynamoDbClient = dynamoDbClient;
     }
 
-    @Value("${aws.dynamodb.table-name}")
-    private String tableName;
+
 
     @Override
     public Optional<VideoProcessing> findByProcessId(ProcessId processId) {
 
-        Map<String, AttributeValue> key = Map.of(
-                "process_id", AttributeValue.builder()
-                        .s(processId.getValue())
-                        .build()
-        );
-
         var response = dynamoDbClient.getItem(GetItemRequest.builder()
                 .tableName(tableName)
-                .key(key)
+                .key(Map.of(
+                        "process_id", AttributeValue.builder()
+                                .s(processId.getValue())
+                                .build()
+                ))
                 .build());
 
-        if (!response.hasItem() || response.item().isEmpty()) {
+        if (!response.hasItem()) {
             return Optional.empty();
         }
 
@@ -51,6 +50,7 @@ public class DynamoVideoProcessingRepository implements VideoProcessingGateway {
                 )
         );
     }
+
 
 
     @Override
@@ -66,44 +66,17 @@ public class DynamoVideoProcessingRepository implements VideoProcessingGateway {
         return video;
     }
 
-
     @Override
-    public Optional<VideoProcessing> findByUserIdAndProcessId(
-            UserId userId,
-            ProcessId processId
-    ) {
+    public List<VideoProcessing> findByUserId(UserId userId) {
 
-        Map<String, AttributeValue> key = Map.of(
-                "user_id", AttributeValue.builder()
-                        .s(userId.getValue())
-                        .build(),
-                "process_id", AttributeValue.builder()
-                        .s(processId.getValue())
-                        .build()
-        );
-
-        var response = dynamoDbClient.getItem(GetItemRequest.builder()
-                .tableName(tableName)
-                .key(key)
-                .build());
-
-        if (!response.hasItem() || response.item().isEmpty()) {
-            return Optional.empty();
-        }
-
-        return Optional.of(
-                VideoProcessingMapper.toDomain(
-                        VideoProcessingItem.from(response.item())
-                )
-        );
-    }
+        System.out.println("USER_ID QUERY: >" + userId.getValue() + "<");
+        System.out.println("TABLE NAME: " + tableName);
 
 
-    @Override
-    public List<VideoProcessing> findAllByUserId(UserId userId) {
 
         var response = dynamoDbClient.query(QueryRequest.builder()
                 .tableName(tableName)
+                .indexName("user_id-index")
                 .keyConditionExpression("user_id = :uid")
                 .expressionAttributeValues(Map.of(
                         ":uid", AttributeValue.builder()
@@ -111,6 +84,7 @@ public class DynamoVideoProcessingRepository implements VideoProcessingGateway {
                                 .build()
                 ))
                 .build());
+
 
         return response.items().stream()
                 .map(VideoProcessingItem::from)

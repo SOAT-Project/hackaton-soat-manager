@@ -11,12 +11,7 @@ public interface VideoProcessingGateway {
 
     VideoProcessing save(VideoProcessing video);
 
-    Optional<VideoProcessing> findByUserIdAndProcessId(
-            UserId userId,
-            ProcessId processId
-    );
-
     Optional<VideoProcessing> findByProcessId(ProcessId processId);
 
-    List<VideoProcessing> findAllByUserId(UserId userId);
+    List<VideoProcessing> findByUserId(UserId userId);
 }

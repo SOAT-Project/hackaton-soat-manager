@@ -9,6 +9,10 @@ import soat.project.hackaton_soat_manager.application.gateway.StorageGateway;
 import soat.project.hackaton_soat_manager.application.gateway.VideoProcessingGateway;
 import soat.project.hackaton_soat_manager.application.usecase.video.download.DownloadVideoUseCase;
 import soat.project.hackaton_soat_manager.application.usecase.video.download.DownloadVideoUseCaseImpl;
+import soat.project.hackaton_soat_manager.application.usecase.video.get.GetVideoByProcessIdUseCase;
+import soat.project.hackaton_soat_manager.application.usecase.video.get.GetVideoByProcessIdUseCaseImpl;
+import soat.project.hackaton_soat_manager.application.usecase.video.list.ListVideosByUserUseCase;
+import soat.project.hackaton_soat_manager.application.usecase.video.list.ListVideosByUserUseCaseImpl;
 import soat.project.hackaton_soat_manager.application.usecase.video.update.UpdateVideoStatusUseCase;
 import soat.project.hackaton_soat_manager.application.usecase.video.update.UpdateVideoStatusUseCaseImpl;
 import soat.project.hackaton_soat_manager.application.usecase.video.upload.UploadVideoUseCase;
@@ -41,6 +45,20 @@ public class VideoUseCaseConfig {
             StorageGateway storageGateway
     ){
         return new DownloadVideoUseCaseImpl(videoProcessingGateway, storageGateway);
+    }
+
+    @Bean
+    public ListVideosByUserUseCase listVideosByUserUseCase(
+            VideoProcessingGateway videoProcessingGateway
+    ){
+        return new ListVideosByUserUseCaseImpl(videoProcessingGateway);
+    }
+
+    @Bean
+    public GetVideoByProcessIdUseCase getVideoByProcessIdUseCase(
+            VideoProcessingGateway videoProcessingGateway
+    ){
+        return new GetVideoByProcessIdUseCaseImpl(videoProcessingGateway);
     }
 
 }
