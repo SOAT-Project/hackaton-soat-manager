@@ -4,11 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class HackatonSoatManagerApplication {
+public class Application {
 
 	public static void main(String[] args) {
-		SpringApplication.run(HackatonSoatManagerApplication.class, args);
-
+		SpringApplication.run(Application.class, args);
 	}
 
 }
