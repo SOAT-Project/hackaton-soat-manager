@@ -1,5 +1,26 @@
 HELP.md
-.gradle
+
+####################################
+# Terraform
+####################################
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfvars.json
+crash.log
+crash.*.log
+.terraform.lock.hcl
+
+####################################
+# Environment
+####################################
+.env
+
+####################################
+# Gradle
+####################################
+.gradle/
 build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
