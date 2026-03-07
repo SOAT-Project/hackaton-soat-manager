@@ -25,12 +25,13 @@ jobs:
         uses: dorny/paths-filter@v3
         with:
           filters: |
+            terraform:
+              - 'terraform/**'
+
             app:
               - 'src/**'
               - 'build.gradle'
               - 'Dockerfile'
-            terraform:
-              - 'terraform/**'
 
       - name: Map branch to environment
         id: branch_map
