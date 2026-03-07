@@ -18,7 +18,10 @@ jobs:
       environment: ${{ steps.branch_map.outputs.environment }}
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Detect changes
         id: filter
@@ -56,7 +59,7 @@ jobs:
 
   infra_deploy:
     needs: detect_changes
-    if: needs.detect_changes.outputs.terraform == 'true' && needs.detect_changes.outputs.app != 'true'
+    if: needs.detect_changes.outputs.terraform == 'true' && needs.detect_changes.outputs.app == 'false'
     uses: ./.github/workflows/infra-deploy.yaml
     with:
       environment: ${{ needs.detect_changes.outputs.environment }}
