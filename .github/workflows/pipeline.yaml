@@ -15,6 +15,7 @@ jobs:
     outputs:
       app: ${{ steps.filter.outputs.app }}
       terraform: ${{ steps.filter.outputs.terraform }}
+      github: ${{ steps.filter.outputs.github }}
       environment: ${{ steps.branch_map.outputs.environment }}
 
     steps:
@@ -30,6 +31,9 @@ jobs:
           filters: |
             terraform:
               - 'terraform/**'
+
+            github:
+              - '.github/**'
 
             app:
               - 'src/**'
@@ -49,6 +53,7 @@ jobs:
 
           echo "environment=$ENVIRONMENT" >> $GITHUB_OUTPUT
 
+
   app_deploy:
     needs: detect_changes
     if: needs.detect_changes.outputs.app == 'true'
@@ -57,9 +62,15 @@ jobs:
       environment: ${{ needs.detect_changes.outputs.environment }}
     secrets: inherit
 
+
   infra_deploy:
     needs: detect_changes
-    if: needs.detect_changes.outputs.terraform == 'true' && needs.detect_changes.outputs.app == 'false'
+    if: |
+      needs.detect_changes.outputs.app == 'false' &&
+      (
+        needs.detect_changes.outputs.terraform == 'true' ||
+        needs.detect_changes.outputs.github == 'true'
+      )
     uses: ./.github/workflows/infra-deploy.yaml
     with:
       environment: ${{ needs.detect_changes.outputs.environment }}
