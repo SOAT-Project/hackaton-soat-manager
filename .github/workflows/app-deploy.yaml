@@ -46,7 +46,7 @@ jobs:
     uses: ./.github/workflows/docker.yaml
     with:
       image_name: srteixeiradias/hackaton-soat-api
-      image_tag: ${{ github.sha }}
+      image_tag: latest
     secrets:
       DOCKERHUB_LOGIN: ${{ secrets.DOCKERHUB_LOGIN }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -56,5 +56,5 @@ jobs:
     uses: ./.github/workflows/terraform.yaml
     with:
       environment: ${{ needs.set_environment.outputs.environment }}
-      image_tag: ${{ github.sha }}
+      image_tag: latest
     secrets: inherit

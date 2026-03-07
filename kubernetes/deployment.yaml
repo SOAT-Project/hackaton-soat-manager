@@ -15,7 +15,7 @@ spec:
       serviceAccountName: hackaton-soat-manager-sa
       containers:
         - name: hackaton-soat-manager
-          image: srteixeiradias/hackaton-soat-api:${image_tag}
+          image: srteixeiradias/hackaton-soat-api:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
