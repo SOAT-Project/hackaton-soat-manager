@@ -116,5 +116,3 @@ resource "kubernetes_manifest" "httproute" {
     kubernetes_manifest.service
   ]
 }
-
-
