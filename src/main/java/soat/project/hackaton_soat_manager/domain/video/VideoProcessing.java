@@ -153,8 +153,7 @@ public class VideoProcessing extends AggregateRoot<ProcessId> {
             throw new NotificationException("failed to create a video processor", notification);
         }
     }
-
-
+    
     public UserId getUserId() {
         return userId;
     }
