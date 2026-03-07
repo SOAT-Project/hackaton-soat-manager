@@ -49,7 +49,7 @@ jobs:
       - name: Terraform Workspace
         run: |
           cd terraform
-          terraform workspace select ${{ inputs.environment }} || terraform workspace new ${{ inputs.environment }}
+          terraform workspace select -or-create ${{ inputs.environment }}
 
       - name: Terraform Destroy
         if: steps.destroy.outputs.destroy == 'true'
