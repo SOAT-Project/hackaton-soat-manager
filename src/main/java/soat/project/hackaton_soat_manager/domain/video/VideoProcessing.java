@@ -154,6 +154,7 @@ public class VideoProcessing extends AggregateRoot<ProcessId> {
         }
     }
 
+
     public UserId getUserId() {
         return userId;
     }
