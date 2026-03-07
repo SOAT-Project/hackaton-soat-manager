@@ -5,7 +5,7 @@ on:
     branches: [main, develop]
     paths:
       - 'src/**'
-      - 'pom.xml'
+      - 'build.gradle'
       - 'Dockerfile'
 
 permissions:
@@ -45,7 +45,7 @@ jobs:
     needs: set_environment
     uses: ./.github/workflows/docker.yaml
     with:
-      image_name: soatproject/hackaton-soat-manager
+      image_name: srteixeiradias/hackaton-soat-api
       image_tag: ${{ github.sha }}
     secrets:
       DOCKERHUB_LOGIN: ${{ secrets.DOCKERHUB_LOGIN }}
