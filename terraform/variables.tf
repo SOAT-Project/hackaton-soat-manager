@@ -44,3 +44,11 @@ variable "application_port" {
 variable "aws_region" {
   type = string
 }
+
+variable "image_tag" {
+  type = string
+}
+
+variable "environment" {
+  type = string
+}

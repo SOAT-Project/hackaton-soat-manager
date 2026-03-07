@@ -1,0 +1,31 @@
+name: App Deploy
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'pom.xml'
+      - 'Dockerfile'
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  build:
+    uses: ./.github/workflows/docker.yaml
+    with:
+      image_name: soatproject/hackaton-soat-manager
+      image_tag: ${{ github.sha }}
+    secrets:
+      DOCKERHUB_LOGIN: ${{ secrets.DOCKERHUB_LOGIN }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  deploy:
+    needs: build
+    uses: ./.github/workflows/terraform.yaml
+    with:
+      environment: prod
+      image_tag: ${{ github.sha }}
+    secrets: inherit

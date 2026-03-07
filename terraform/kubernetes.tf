@@ -64,7 +64,12 @@ resource "kubernetes_config_map" "app_config" {
 ################################################################################
 
 resource "kubernetes_manifest" "deployment" {
-  manifest = yamldecode(file("${path.module}/../kubernetes/deployment.yaml"))
+  manifest = yamldecode(templatefile(
+    "${path.module}/../kubernetes/deployment.yaml",
+    {
+      image_tag = var.image_tag
+    }
+  ))
 
   depends_on = [
     kubernetes_manifest.namespace,
