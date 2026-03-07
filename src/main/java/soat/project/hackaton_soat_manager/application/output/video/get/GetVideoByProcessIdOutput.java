@@ -15,7 +15,8 @@ public record GetVideoByProcessIdOutput(
                 video.getUserId().getValue(),
                 video.getStatus().name(),
                 video.getCreatedAt().toString(),
-                video.getProcessedAt().toString()
+                video.getProcessedAt() != null ? video.getProcessedAt().toString() : null
         );
     }
+
 }
