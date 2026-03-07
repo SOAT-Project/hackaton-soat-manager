@@ -1,0 +1,62 @@
+name: Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+
+  detect_changes:
+    runs-on: ubuntu-latest
+    outputs:
+      app: ${{ steps.filter.outputs.app }}
+      terraform: ${{ steps.filter.outputs.terraform }}
+      environment: ${{ steps.branch_map.outputs.environment }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Detect changes
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            app:
+              - 'src/**'
+              - 'build.gradle'
+              - 'Dockerfile'
+            terraform:
+              - 'terraform/**'
+
+      - name: Map branch to environment
+        id: branch_map
+        run: |
+          BRANCH_NAME="${{ github.ref_name }}"
+
+          case "$BRANCH_NAME" in
+            develop) ENVIRONMENT="dev" ;;
+            main) ENVIRONMENT="prod" ;;
+            *) echo "Branch não suportada"; exit 1 ;;
+          esac
+
+          echo "environment=$ENVIRONMENT" >> $GITHUB_OUTPUT
+
+  app_deploy:
+    needs: detect_changes
+    if: needs.detect_changes.outputs.app == 'true'
+    uses: ./.github/workflows/app-deploy.yaml
+    with:
+      environment: ${{ needs.detect_changes.outputs.environment }}
+    secrets: inherit
+
+  infra_deploy:
+    needs: detect_changes
+    if: needs.detect_changes.outputs.terraform == 'true' && needs.detect_changes.outputs.app != 'true'
+    uses: ./.github/workflows/infra-deploy.yaml
+    with:
+      environment: ${{ needs.detect_changes.outputs.environment }}
+    secrets: inherit
