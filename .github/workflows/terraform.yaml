@@ -1,0 +1,92 @@
+name: Terraform
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+      image_tag:
+        required: true
+        type: string
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.9.0
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE_ARN }}
+          role-session-name: GitHubOIDC
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Read destroy config
+        id: destroy
+        run: |
+          DESTROY=$(jq -r '.${{ inputs.environment }}' terraform/destroy_config.json)
+          echo "destroy=$DESTROY" >> $GITHUB_OUTPUT
+
+      - name: Terraform Init
+        run: |
+          cd terraform && terraform init \
+            -backend-config="bucket=${{ secrets.AWS_STATEFILE_S3_BUCKET }}" \
+            -backend-config="key=hackaton-soat-manager/${{ inputs.environment }}/terraform.tfstate" \
+            -backend-config="region=${{ secrets.AWS_REGION }}" \
+            -backend-config="dynamodb_table=${{ secrets.AWS_LOCK_DYNAMODB_TABLE }}"
+
+      - name: Terraform Workspace
+        run: |
+          cd terraform
+          terraform workspace select ${{ inputs.environment }} || terraform workspace new ${{ inputs.environment }}
+
+      - name: Terraform Destroy
+        if: steps.destroy.outputs.destroy == 'true'
+        env:
+          TF_VAR_environment: ${{ inputs.environment }}
+          TF_VAR_image_tag: ${{ inputs.image_tag }}
+          TF_VAR_aws_region: ${{ secrets.AWS_REGION }}
+          TF_VAR_eks_cluster_name: ${{ secrets.EKS_CLUSTER_NAME }}
+          TF_VAR_irsa_role_name: ${{ secrets.IRSA_ROLE_NAME }}
+          TF_VAR_dynamodb_table_name: ${{ secrets.DYNAMODB_TABLE_NAME }}
+          TF_VAR_s3_bucket_name: ${{ secrets.S3_BUCKET_NAME }}
+          TF_VAR_sqs_notify_name: ${{ secrets.SQS_NOTIFY_NAME }}
+          TF_VAR_sqs_process_name: ${{ secrets.SQS_PROCESS_NAME }}
+          TF_VAR_sqs_processed_name: ${{ secrets.SQS_PROCESSED_NAME }}
+          TF_VAR_kubernetes_namespace: ${{ secrets.KUBERNETES_NAMESPACE }}
+          TF_VAR_service_account_name: ${{ secrets.SERVICE_ACCOUNT_NAME }}
+          TF_VAR_application_port: "8080"
+        run: |
+          cd terraform
+          terraform destroy -auto-approve
+
+      - name: Terraform Apply
+        if: steps.destroy.outputs.destroy != 'true'
+        env:
+          TF_VAR_environment: ${{ inputs.environment }}
+          TF_VAR_image_tag: ${{ inputs.image_tag }}
+          TF_VAR_aws_region: ${{ secrets.AWS_REGION }}
+          TF_VAR_eks_cluster_name: ${{ secrets.EKS_CLUSTER_NAME }}
+          TF_VAR_irsa_role_name: ${{ secrets.IRSA_ROLE_NAME }}
+          TF_VAR_dynamodb_table_name: ${{ secrets.DYNAMODB_TABLE_NAME }}
+          TF_VAR_s3_bucket_name: ${{ secrets.S3_BUCKET_NAME }}
+          TF_VAR_sqs_notify_name: ${{ secrets.SQS_NOTIFY_NAME }}
+          TF_VAR_sqs_process_name: ${{ secrets.SQS_PROCESS_NAME }}
+          TF_VAR_sqs_processed_name: ${{ secrets.SQS_PROCESSED_NAME }}
+          TF_VAR_kubernetes_namespace: ${{ secrets.KUBERNETES_NAMESPACE }}
+          TF_VAR_service_account_name: ${{ secrets.SERVICE_ACCOUNT_NAME }}
+          TF_VAR_application_port: "8080"
+        run: |
+          cd terraform
+          terraform apply -auto-approve
