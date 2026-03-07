@@ -28,6 +28,7 @@ jobs:
         id: filter
         uses: dorny/paths-filter@v3
         with:
+          base: ${{ github.event.before }}
           filters: |
             terraform:
               - 'terraform/**'
@@ -52,6 +53,12 @@ jobs:
           esac
 
           echo "environment=$ENVIRONMENT" >> $GITHUB_OUTPUT
+
+      - name: Debug outputs
+        run: |
+          echo "APP=${{ steps.filter.outputs.app }}"
+          echo "TERRAFORM=${{ steps.filter.outputs.terraform }}"
+          echo "GITHUB=${{ steps.filter.outputs.github }}"
 
 
   app_deploy:
