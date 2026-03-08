@@ -49,13 +49,12 @@ jobs:
       - name: Terraform Workspace
         run: |
           cd terraform
-          terraform workspace select ${{ inputs.environment }} || terraform workspace new ${{ inputs.environment }}
+          terraform workspace select -or-create ${{ inputs.environment }}
 
       - name: Terraform Destroy
         if: steps.destroy.outputs.destroy == 'true'
         env:
           TF_VAR_environment: ${{ inputs.environment }}
-          TF_VAR_image_tag: ${{ inputs.image_tag }}
           TF_VAR_aws_region: ${{ secrets.AWS_REGION }}
           TF_VAR_eks_cluster_name: ${{ secrets.EKS_CLUSTER_NAME }}
           TF_VAR_irsa_role_name: ${{ secrets.IRSA_ROLE_NAME }}
@@ -75,7 +74,6 @@ jobs:
         if: steps.destroy.outputs.destroy != 'true'
         env:
           TF_VAR_environment: ${{ inputs.environment }}
-          TF_VAR_image_tag: ${{ inputs.image_tag }}
           TF_VAR_aws_region: ${{ secrets.AWS_REGION }}
           TF_VAR_eks_cluster_name: ${{ secrets.EKS_CLUSTER_NAME }}
           TF_VAR_irsa_role_name: ${{ secrets.IRSA_ROLE_NAME }}

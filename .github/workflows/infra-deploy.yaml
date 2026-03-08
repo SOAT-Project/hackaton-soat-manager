@@ -1,19 +1,21 @@
 name: Infra Deploy
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'terraform/**'
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
 
 permissions:
   id-token: write
   contents: read
 
 jobs:
+
   terraform:
     uses: ./.github/workflows/terraform.yaml
     with:
-      environment: prod
+      environment: ${{ inputs.environment }}
       image_tag: keep
     secrets: inherit
