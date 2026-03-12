@@ -1,0 +1,27 @@
+  sonar {
+    properties {
+    
+    property "sonar.projectKey", "SOAT-Project_hackaton-soat-manager"
+    property "sonar.organization", "soat-project"
+    property "sonar.host.url", "https://sonarcloud.io"
+    
+    property "sonar.projectName", "hackaton-soat-manager"
+    
+    property "sonar.java.binaries", "build/classes/java/main"
+    property "sonar.java.test.binaries", "build/classes/java/test"
+    
+    property "sonar.coverage.jacoco.xmlReportPaths",
+    "build/reports/jacoco/test/jacocoTestReport.xml"
+    
+    property "sonar.exclusions", "**/HackatonSoatManagerApplication.java"
+    
+    property "sonar.coverage.exclusions", [
+    "**/HackatonSoatManagerApplication.java",
+    "**/application/command/**",
+    "**/application/gateway/**",
+    "**/application/output/**",
+    "**/infrastructure/**",
+    "**/domain/exception/**"
+    ].join(",")
+    }
+  }
