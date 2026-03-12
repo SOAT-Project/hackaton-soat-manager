@@ -163,8 +163,8 @@ O processamento de vídeos pode assumir os seguintes estados:
 ## Qualidade e Cobertura de Testes
 
 O projeto utiliza **SonarCloud** para análise estática de código e acompanhamento da cobertura de testes. A cobertura é gerada automaticamente através do **JaCoCo** durante a pipeline de CI.
-Atualmente a aplicação conta com 84,5% de cobertura de testes.
 
 ![img.png](img.png)
+
 
 Atualmente a aplicação conta com **84,5% de cobertura de testes**.
